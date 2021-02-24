@@ -143,6 +143,13 @@ MonoBehaviour:
   levelMask:
     serializedVersion: 2
     m_Bits: 256
+  shootableMask:
+    serializedVersion: 2
+    m_Bits: 256
+  shootingCooldown: 1
+  bulletPrefab: {fileID: 6238716359429049497, guid: 9806b417c31c5d44d8d2f7555e649b44, type: 3}
+  bulletStartingPoint: {fileID: 440761683}
+  bulletSpeed: 30
 --- !u!95 &412636153
 Animator:
   serializedVersion: 3
@@ -152,7 +159,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 412636151}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: 096483654752d1a46b6c55e9fa66d1d2, type: 3}
   m_Controller: {fileID: 9100000, guid: 46d7c35773f77b0429188576db37e92e, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -198,6 +205,41 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0.8, z: 0}
+--- !u!4 &412636156 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 096483654752d1a46b6c55e9fa66d1d2, type: 3}
+  m_PrefabInstance: {fileID: 1682312655}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &440761682
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 440761683}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &440761683
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 440761682}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.92, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 412636156}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &633002257
 GameObject:
   m_ObjectHideFlags: 0

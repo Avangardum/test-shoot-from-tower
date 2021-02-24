@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -25,8 +24,14 @@ public class PlayerBehaviour : MonoBehaviour
     private static readonly int TurnSpeedHash = Animator.StringToHash("Turn speed");
     private static readonly int IsMovingHash = Animator.StringToHash("Is moving");
 
+    private float _currentShootingCooldown;
+
     [SerializeField] private LayerMask levelMask;
-    
+    [SerializeField] private LayerMask shootableMask;
+    [SerializeField] private float shootingCooldown = 1;
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private Transform bulletStartingPoint;
+    [SerializeField] private float bulletSpeed;
 
     private void Awake()
     {
@@ -38,6 +43,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         Movement(); 
         DrawPath();
+        Shooting();
     }
 
     private void Movement()
@@ -77,6 +83,35 @@ public class PlayerBehaviour : MonoBehaviour
         for (int i = 1; i < _navMeshAgent.path.corners.Length; i++)
         {
             Debug.DrawLine(_navMeshAgent.path.corners[i], _navMeshAgent.path.corners[i-1], Color.blue);
+        }
+    }
+
+    private void Shooting()
+    {
+        if (!_isInShootingMode)
+            return;
+
+        if (Input.GetKey(KeyCode.Mouse0) && _currentShootingCooldown == 0)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit raycastHit;
+            if (Physics.Raycast(ray, out raycastHit, Mathf.Infinity, shootableMask))
+            {
+                Vector3 target = raycastHit.point;
+                
+                _currentShootingCooldown = shootingCooldown;
+                Debug.Log("BANG!");
+
+                GameObject bullet = Instantiate(bulletPrefab, bulletStartingPoint.position, Quaternion.identity);
+                bullet.transform.LookAt(target);
+                bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * bulletSpeed;
+            }
+        }
+
+        _currentShootingCooldown -= Time.deltaTime;
+        if (_currentShootingCooldown < 0)
+        {
+            _currentShootingCooldown = 0;
         }
     }
 
