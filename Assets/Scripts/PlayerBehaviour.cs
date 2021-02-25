@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -32,6 +33,13 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform bulletStartingPoint;
     [SerializeField] private float bulletSpeed;
+    [SerializeField] private Transform IKLookAtMarker;
+    [SerializeField] private Transform IKRightHandMarker;
+    [SerializeField] private GameObject gun;
+    [SerializeField] private float maxShootingAngle = 30;
+    [SerializeField] private float minShootingAngle = -30;
+    [SerializeField] private Transform gunSphereCenter;
+    [SerializeField] private float gunDistance = 1;
 
     private void Awake()
     {
@@ -91,7 +99,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (!_isInShootingMode)
             return;
 
-        if (Input.GetKey(KeyCode.Mouse0) && _currentShootingCooldown == 0)
+        if (Input.GetKey(KeyCode.Mouse0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
@@ -99,12 +107,32 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 Vector3 target = raycastHit.point;
                 
-                _currentShootingCooldown = shootingCooldown;
-                Debug.Log("BANG!");
+                Vector3 viewVector = transform.forward;
+                viewVector.y = 0;
+                Vector3 vectorToTarget = target - transform.position;
+                vectorToTarget.y = 0;
+                float shootingAngle = Vector3.SignedAngle(viewVector, vectorToTarget, Vector3.up);
+                float shootingAngleOverflow = 0;
+                if (shootingAngle > maxShootingAngle)
+                {
+                    shootingAngleOverflow = shootingAngle - maxShootingAngle;
+                }
+                else if (shootingAngle < minShootingAngle)
+                {
+                    shootingAngleOverflow = shootingAngle - minShootingAngle;
+                }
+                transform.Rotate(Vector3.up * shootingAngleOverflow);
+                gun.transform.position = gunSphereCenter.position + (target - gunSphereCenter.position).normalized * gunDistance;
+                gun.transform.LookAt(target);
+                
+                if (_currentShootingCooldown == 0)
+                {
+                    _currentShootingCooldown = shootingCooldown;
 
-                GameObject bullet = Instantiate(bulletPrefab, bulletStartingPoint.position, Quaternion.identity);
-                bullet.transform.LookAt(target);
-                bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * bulletSpeed;
+                    GameObject bullet = Instantiate(bulletPrefab, bulletStartingPoint.position, Quaternion.identity);
+                    bullet.transform.LookAt(target);
+                    bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * bulletSpeed;
+                }
             }
         }
 
@@ -118,7 +146,9 @@ public class PlayerBehaviour : MonoBehaviour
     private void EnableShootingMode()
     {
         _isInShootingMode = true;
-        Debug.Log("(　-_･) ︻デ═一");
+        
+        gun.SetActive(true);
+        
         _animator.SetFloat(SpeedHash, 0);
         _animator.SetFloat(TurnSpeedHash, 0);
         _animator.SetBool(IsMovingHash, false);
@@ -138,5 +168,27 @@ public class PlayerBehaviour : MonoBehaviour
         {
             _isInShootingZone = false;
         }
+    }
+
+    private void OnAnimatorIK(int layerIndex)
+    {
+        if (_isInShootingMode)
+        {
+            _animator.SetLookAtWeight(1);
+            _animator.SetLookAtPosition(IKLookAtMarker.position);
+            
+            _animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
+            _animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 1);
+            _animator.SetIKPosition(AvatarIKGoal.RightHand, IKRightHandMarker.position);
+            _animator.SetIKRotation(AvatarIKGoal.RightHand, IKRightHandMarker.rotation);
+        }
+        else
+        {
+            _animator.SetLookAtWeight(0);
+            _animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 0);
+            _animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 0);
+        }
+        
+        
     }
 }
