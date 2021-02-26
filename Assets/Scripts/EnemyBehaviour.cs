@@ -5,8 +5,16 @@ using UnityEngine;
 
 public class EnemyBehaviour : MonoBehaviour
 {
-    public void Die()
+    private Animator _animator;
+
+    private void Awake()
     {
-        Destroy(gameObject);
+        _animator = GetComponent<Animator>();
+    }
+
+    public void Die(GameObject shotBodyPart, Vector3 shotPosition, Vector3 shotImpulse)
+    {
+        _animator.enabled = false;
+        shotBodyPart.GetComponent<Rigidbody>().AddForceAtPosition(shotImpulse, shotPosition, ForceMode.Impulse);
     }
 }
