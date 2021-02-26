@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 public class BulletBehaviour : MonoBehaviour
 {
     [SerializeField] private float lifetime = 10;
-    [SerializeField] private float impulse = 1;
+    [SerializeField] private BulletData bulletData;
     
     private int _enemyLayer;
 
@@ -22,7 +22,7 @@ public class BulletBehaviour : MonoBehaviour
         if (other.gameObject.layer == _enemyLayer)
         {
             other.gameObject.GetComponentInParent<EnemyBehaviour>()
-                .Die(other.gameObject, other.GetContact(0).point, transform.forward * impulse);
+                .Die(other.gameObject, other.GetContact(0).point, transform.forward * bulletData.Impulse);
         }
         Destroy(gameObject);
     }

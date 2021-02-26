@@ -7150,7 +7150,6 @@ MonoBehaviour:
   shootableMask:
     serializedVersion: 2
     m_Bits: 768
-  shootingCooldown: 1
   bulletPrefab: {fileID: 6804990658058999119, guid: 0efcb4527bc0a92479950f1847dcc874, type: 3}
   bulletStartingPoint: {fileID: 1696645287}
   bulletSpeed: 30
@@ -7161,6 +7160,7 @@ MonoBehaviour:
   minShootingAngle: -30
   gunSphereCenter: {fileID: 440761683}
   gunDistance: 0.55
+  playerData: {fileID: 11400000, guid: 0528ec396c415b4419770c5793cf119a, type: 2}
 --- !u!95 &412636153
 Animator:
   serializedVersion: 3

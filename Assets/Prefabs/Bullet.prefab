@@ -107,7 +107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifetime: 10
-  impulse: 200
+  bulletData: {fileID: 11400000, guid: 30117ddcb1bc79a408edeb559bdd565e, type: 2}
 --- !u!1001 &7799836738284049863
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -29,7 +29,6 @@ public class PlayerBehaviour : MonoBehaviour
 
     [SerializeField] private LayerMask levelMask;
     [SerializeField] private LayerMask shootableMask;
-    [SerializeField] private float shootingCooldown = 1;
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform bulletStartingPoint;
     [SerializeField] private float bulletSpeed;
@@ -40,11 +39,14 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField] private float minShootingAngle = -30;
     [SerializeField] private Transform gunSphereCenter;
     [SerializeField] private float gunDistance = 1;
+    [SerializeField] private PlayerData playerData;
 
     private void Awake()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _animator = GetComponent<Animator>();
+
+        _navMeshAgent.speed = playerData.movementSpeed;
     }
 
     private void Update()
@@ -127,7 +129,7 @@ public class PlayerBehaviour : MonoBehaviour
                 
                 if (_currentShootingCooldown == 0)
                 {
-                    _currentShootingCooldown = shootingCooldown;
+                    _currentShootingCooldown = playerData.shootingCooldown;
 
                     GameObject bullet = Instantiate(bulletPrefab, bulletStartingPoint.position, Quaternion.identity);
                     bullet.transform.LookAt(target);
